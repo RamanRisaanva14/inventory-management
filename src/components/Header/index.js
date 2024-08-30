@@ -1,5 +1,5 @@
 import { Switch } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
 import { TbLogout } from "react-icons/tb";
 
 const Header = ({ isAdmin, handleToggle }) => {

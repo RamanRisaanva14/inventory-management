@@ -25,8 +25,7 @@ import axios from "axios";
 const InventoryTable = ({ isAdmin }) => {
   const [data, setData] = useState([]);
   const [disbale, setDisable] = useState(false);
-  const [editModal, setEditModal] = useState(false);
-  const [editItem, setEditItem] = useState(null);
+
 
   useEffect(() => {
     axios
@@ -68,23 +67,8 @@ const InventoryTable = ({ isAdmin }) => {
     setData([...temp]);
   };
 
-  const handleEditClick = (item) => {
-    setEditItem(item);
-    setEditModal(true);
-  };
+  
 
-  const handleSave = () => {
-    const updatedData = data.map((d) =>
-      d.name === editItem.name ? editItem : d
-    );
-    setData(updatedData);
-    handleClose();
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setEditItem({ ...editItem, [name]: value });
-  };
 
   return (
     <div>
@@ -185,7 +169,7 @@ const InventoryTable = ({ isAdmin }) => {
                       className={`text-green-800 pl-2 ${
                         isAdmin && "cursor-pointer"
                       }`}
-                      onClick={() => handleEditClick(item)}
+                
                     >
                       <MdModeEdit />
                     </button>
