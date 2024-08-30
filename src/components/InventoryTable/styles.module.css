@@ -1,0 +1,9 @@
+.stats_box{
+    @apply flex gap-5 w-full items-start p-4 bg-blend-darken bg-[#253326] rounded-lg text-white h-[100px]
+}
+.table_header{
+    @apply font-bold !text-[#707F2C] !text-[12px] px-2 bg-[#161719] rounded-md w-fit
+}
+.table_cell{
+    @apply !px-2 !py-3 text-[14px] !text-white
+}

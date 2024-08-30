@@ -1,23 +1,18 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import "./App.css";
+import Header from "./components/Header";
+import InventoryTable from "./components/InventoryTable";
 
 function App() {
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  const handleToggle = () => {
+    setIsAdmin(!isAdmin);
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="bg-[#161719] h-[100vh] p-4">
+      <Header handleToggle={handleToggle} isAdmin={isAdmin} />
+      <InventoryTable isAdmin={isAdmin} />
     </div>
   );
 }
