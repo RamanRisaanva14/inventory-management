@@ -12,6 +12,9 @@ import { RiExchangeDollarFill } from "react-icons/ri";
 import { IoEyeOff, IoEyeSharp } from "react-icons/io5";
 import styles from "./styles.module.css";
 import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
   Paper,
   Table,
   TableBody,
@@ -19,13 +22,15 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
 } from "@mui/material";
 import axios from "axios";
 
 const InventoryTable = ({ isAdmin }) => {
   const [data, setData] = useState([]);
   const [disbale, setDisable] = useState(false);
-
+  const [editModal, setEditModal] = useState(false);
+  const [editItem, setEditItem] = useState(null);
 
   useEffect(() => {
     axios
@@ -63,12 +68,27 @@ const InventoryTable = ({ isAdmin }) => {
 
   const handleDelete = (index) => {
     const temp = [...data];
-    temp.filter((t, i) => i !== index);
-    setData([...temp]);
+    const updated = temp.filter((t, i) => i !== index);
+    setData([...updated]);
   };
 
-  
+  const handleEditClick = (item) => {
+    setEditItem(item);
+    setEditModal(true);
+  };
 
+  const handleSave = () => {
+    const updatedData = data.map((d) =>
+      d.name === editItem.name ? editItem : d
+    );
+    setData(updatedData);
+    setEditModal(false);
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setEditItem({ ...editItem, [name]: value });
+  };
 
   return (
     <div>
@@ -126,57 +146,57 @@ const InventoryTable = ({ isAdmin }) => {
                 >
                   <TableCell
                     className={`${styles.table_cell} ${
-                      disbale && "text-opacity-40"
+                      disbale && "!text-opacity-40"
                     } `}
                   >
                     {item?.name}
                   </TableCell>
                   <TableCell
                     className={`${styles.table_cell} ${
-                      disbale && "text-opacity-40"
+                      disbale && "!text-opacity-40"
                     }`}
                   >
                     {item?.category}
                   </TableCell>
                   <TableCell
                     className={`${styles.table_cell} ${
-                      disbale && "text-opacity-40"
+                      disbale && "!text-opacity-40"
                     }`}
                   >
                     {item?.price}
                   </TableCell>
                   <TableCell
                     className={`${styles.table_cell} ${
-                      disbale && "text-opacity-40"
+                      disbale && "!text-opacity-40"
                     }`}
                   >
                     {item?.quantity}
                   </TableCell>
                   <TableCell
                     className={`${styles.table_cell} ${
-                      disbale && "text-opacity-40"
+                      disbale && "!text-opacity-40"
                     }`}
                   >
                     {item?.value}
                   </TableCell>
-                  <TableCell
-                    className={`${styles.table_cell} ${
-                      isAdmin && "!text-white"
-                    }`}
-                  >
+                  <TableCell className={`${styles.table_cell} `}>
                     <button
                       disabled={!isAdmin}
-                      className={`text-green-800 pl-2 ${
-                        isAdmin && "cursor-pointer"
-                      }`}
-                
+                      className={`${
+                        !isAdmin
+                          ? "!text-white !text-opacity-50"
+                          : " text-green-800"
+                      } pl-2 ${isAdmin && "cursor-pointer"}`}
+                      onClick={() => handleEditClick(item)}
                     >
                       <MdModeEdit />
                     </button>
                     <button
-                      className={`text-purple-400 pl-2 ${
-                        isAdmin && "cursor-pointer"
-                      }`}
+                      className={`${
+                        !isAdmin
+                          ? "!text-white !text-opacity-50"
+                          : "text-purple-400"
+                      }  pl-2 ${isAdmin && "cursor-pointer"}`}
                       onClick={() => setDisable(!disbale)}
                     >
                       {disbale ? <IoEyeOff /> : <IoEyeSharp />}
@@ -184,9 +204,11 @@ const InventoryTable = ({ isAdmin }) => {
                     <button
                       disabled={!isAdmin}
                       onClick={() => handleDelete(index)}
-                      className={`text-red-500 pl-2 ${
-                        isAdmin && "cursor-pointer"
-                      }`}
+                      className={`${
+                        !isAdmin
+                          ? "!text-white !text-opacity-50"
+                          : "text-red-500 "
+                      }  pl-2 ${isAdmin && "cursor-pointer"}`}
                     >
                       <MdDelete />
                     </button>
@@ -197,6 +219,56 @@ const InventoryTable = ({ isAdmin }) => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      <Dialog open={editModal} onClose={() => setEditModal(false)}>
+        <DialogTitle>Edit Item</DialogTitle>
+        <DialogContent>
+          {editItem && (
+            <>
+              <p>{editItem.name}</p>
+              <div className="flex flex-col space-y-4">
+                <TextField
+                  label="Category"
+                  name="category"
+                  value={editItem.category}
+                  onChange={handleChange}
+                  fullWidth
+                />
+                <TextField
+                  label="Price"
+                  name="price"
+                  type="number"
+                  value={editItem.price}
+                  onChange={handleChange}
+                  fullWidth
+                />
+                <TextField
+                  label="Quantity"
+                  name="quantity"
+                  type="number"
+                  value={editItem.quantity}
+                  onChange={handleChange}
+                  fullWidth
+                />
+                <TextField
+                  label="Value"
+                  name="value"
+                  value={editItem.value}
+                  onChange={handleChange}
+                  fullWidth
+                />
+              </div>
+            </>
+          )}
+        </DialogContent>
+
+        <button onClick={() => setEditModal(false)} color="secondary">
+          Cancel
+        </button>
+        <button onClick={handleSave} color="primary">
+          Save
+        </button>
+      </Dialog>
     </div>
   );
 };
